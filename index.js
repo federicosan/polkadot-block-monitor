@@ -364,6 +364,8 @@ const unsubscribe = await api.derive.chain.subscribeNewHeads(async (header) => {
     signedBlock = await api.rpc.chain.getBlock(blockHash);
     newBlockParentHash = `${signedBlock.block.header.parentHash}`;
     parentHashes.insertTop(newBlockParentHash);
+    author = `${header.author}`;
+    blockauthors.insertTop(author);
 } catch(e){
     console.log(e);
 }
