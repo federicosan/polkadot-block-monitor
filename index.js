@@ -182,8 +182,8 @@ let blocks = blessed.box({
   top: 1,
   label: 'Block #',
   left: 'left',
-  width: '15%',
-  height: '50%',
+  width: '10%',
+  height: '36%',
   content: '',
   fg: '#ebdbb2',
   tags: true,
@@ -204,16 +204,17 @@ let blocks = blessed.box({
     style: {
       bg: 'yellow'
     }
-  }
+  },
+  align:'center',
 });
 
 
-let hashes = blessed.box({
+let blockauthors = blessed.box({
   top: 1,
-  label: 'Block Hash',
-  //left: 'left',
-  width: '50%',
-  height: '50%',
+  label: 'Block Author',
+  left: '10%',
+  width: '52%',
+  height: '36%',
   content: '',
   fg: '#ebdbb2',
   tags: true,
@@ -240,9 +241,105 @@ let hashes = blessed.box({
 
 
 
+let hashes = blessed.box({
+  top:'40%',
+  label: 'Block Hash',
+  left: 'left',
+  width: '62%',
+  height: '34%',
+  content: '',
+  fg: '#ebdbb2',
+  tags: true,
+  shadow:true,
+  border:{
+    'type': 'line',
+    'fg': '#ebdbb2'
+  },
+  autoPadding: true,
+  style: {
+    bg: 'red'
+    },
+  keys: true,
+  vi: true,
+  alwaysScroll:true,
+  scrollable: true,
+  scrollbar: {
+    style: {
+      bg: 'yellow'
+    }
+  },
+  align:'center',
+  });
+
+
+  let parentHashes = blessed.box({
+    bottom: 0,
+    label: 'Parent Hash',
+    width: '62%',
+    height: '34%',
+    content: '',
+    fg: '#ebdbb2',
+    tags: true,
+    shadow:true,
+    border:{
+      'type': 'line',
+      'fg': '#ebdbb2'
+    },
+    autoPadding: true,
+    style: {
+      bg: 'magenta'
+      },
+    keys: true,
+    vi: true,
+    alwaysScroll:true,
+    scrollable: true,
+    scrollbar: {
+      style: {
+        bg: 'yellow'
+      }
+    },
+    align:'center',
+    });
+
+
+    let leaderboard = blessed.box({
+      top: 1,
+      label: 'Leaderboard',
+      width: '40%',
+      left:'62%',
+      height: '100%',
+      content: '',
+      fg: '#ebdbb2',
+      tags: true,
+      shadow:true,
+      border:{
+        'type': 'line',
+        'fg': '#ebdbb2'
+      },
+      autoPadding: true,
+      style: {
+        bg: 'blue'
+        },
+      keys: true,
+      vi: true,
+      alwaysScroll:true,
+      scrollable: true,
+      scrollbar: {
+        style: {
+          bg: 'yellow'
+        }
+      },
+      align:'center',
+      });
+
+
+
 screen.append(blocks);
 screen.append(hashes);
-screen.render();
+screen.append(parentHashes);
+screen.append(leaderboard);
+screen.append(blockauthors);
+screen.render()
 
 let count = 0;
 
@@ -260,15 +357,13 @@ const unsubscribe = await api.derive.chain.subscribeNewHeads(async (header) => {
  try {
     newBlock = `${header.number}`;
     blockHash = await api.rpc.chain.getBlockHash(header.number);
-    blocks.insertTop(newBlock);
-    hashes.insertTop(blockHash);
     newBlockHash = `${blockHash}`;
+    blocks.insertTop(newBlock);
+    hashes.insertTop(newBlockHash);
     author = `${header.author}`;
-    
-    
     signedBlock = await api.rpc.chain.getBlock(blockHash);
     newBlockParentHash = `${signedBlock.block.header.parentHash}`;
- 
+    parentHashes.insertTop(newBlockParentHash);
 } catch(e){
     console.log(e);
 }
