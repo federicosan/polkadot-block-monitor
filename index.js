@@ -178,7 +178,7 @@ drawHeader(screen, info);
 let blocks = blessed.box({
   top: 1,
   left: 'left',
-  width: '100%',
+  width: '30%',
   height: '50%',
   content: '',
   fg: '#ebdbb2',
@@ -188,6 +188,18 @@ let blocks = blessed.box({
     'fg': '#ebdbb2'
   },
   autoPadding: true,
+  style: {
+    bg: 'red'
+    },
+  keys: true,
+  vi: true,
+  alwaysScroll:true,
+  scrollable: true,
+  scrollbar: {
+    style: {
+      bg: 'yellow'
+    }
+  }
 });
 
 screen.append(blocks);
@@ -208,7 +220,8 @@ let author = '';
 
 const unsubscribe = await api.derive.chain.subscribeNewHeads(async (header) => {
  try {
-    blocks.setContent(newBlock);
+    blocks.insertTop(newBlock);
+    //blocks.setContent(newBlock);
     newBlock = `New block #${header.number}`;
     author = `${header.author}`;
     blockHash = await api.rpc.chain.getBlockHash(header.number);
