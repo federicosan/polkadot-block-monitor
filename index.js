@@ -160,7 +160,10 @@ cli
 
 
   // Create a screen object.
-screen = blessed.screen();
+  screen = blessed.screen({
+    smartCSR: true,
+    autoPadding: true
+  });
 screen.title = 'Polkadot Commander';
 
   
