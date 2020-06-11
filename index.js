@@ -180,12 +180,14 @@ drawHeader(screen, info);
 
 let blocks = blessed.box({
   top: 1,
+  label: 'Block #',
   left: 'left',
-  width: '30%',
+  width: '15%',
   height: '50%',
   content: '',
   fg: '#ebdbb2',
   tags: true,
+  shadow:true,
   border:{
     'type': 'line',
     'fg': '#ebdbb2'
@@ -205,8 +207,41 @@ let blocks = blessed.box({
   }
 });
 
-screen.append(blocks);
 
+let hashes = blessed.box({
+  top: 1,
+  label: 'Block Hash',
+  //left: 'left',
+  width: '50%',
+  height: '50%',
+  content: '',
+  fg: '#ebdbb2',
+  tags: true,
+  shadow:true,
+  border:{
+    'type': 'line',
+    'fg': '#ebdbb2'
+  },
+  autoPadding: true,
+  style: {
+    bg: 'red'
+    },
+  keys: true,
+  vi: true,
+  alwaysScroll:true,
+  scrollable: true,
+  scrollbar: {
+    style: {
+      bg: 'yellow'
+    }
+  },
+  align:'center',
+});
+
+
+
+screen.append(blocks);
+screen.append(hashes);
 screen.render();
 
 let count = 0;
@@ -223,12 +258,14 @@ let author = '';
 
 const unsubscribe = await api.derive.chain.subscribeNewHeads(async (header) => {
  try {
-    blocks.insertTop(newBlock);
-    //blocks.setContent(newBlock);
-    newBlock = `New block #${header.number}`;
-    author = `${header.author}`;
+    newBlock = `${header.number}`;
     blockHash = await api.rpc.chain.getBlockHash(header.number);
+    blocks.insertTop(newBlock);
+    hashes.insertTop(blockHash);
     newBlockHash = `${blockHash}`;
+    author = `${header.author}`;
+    
+    
     signedBlock = await api.rpc.chain.getBlock(blockHash);
     newBlockParentHash = `${signedBlock.block.header.parentHash}`;
  
