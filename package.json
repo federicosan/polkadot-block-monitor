@@ -1,0 +1,23 @@
+{
+  "name": "polkadotbounties",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@polkadot/api": "^1.18.1",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.20",
+    "commander": "^5.1.0",
+    "drawille": "^1.1.1",
+    "glob": "^7.1.6",
+    "heap-js": "^2.1.1",
+    "neo-blessed": "^0.2.0",
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
