@@ -3,7 +3,7 @@ A command line monitor for blocks with an author real-time leaderboard based on 
 
 #### TODO
 * Finish leaderboard based on total number of blocks authored with order static trees and a hashtable
-* Color las 6 characters of every hash for easier identification
+* Color last 6 characters of every hash for easier identification
 * Refactor code an tidy things up.
 
 
