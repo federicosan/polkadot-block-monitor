@@ -202,9 +202,9 @@ let hashes = blessed.box({
     let leaderboard = blessed.box({
       top: 1,
       label: 'Leaderboard',
-      width: '40%',
+      width: '39%',
       left:'62%',
-      height: '100%',
+      height: '97%',
       content: '',
       fg: '#ebdbb2',
       tags: true,
