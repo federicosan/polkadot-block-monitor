@@ -21,7 +21,7 @@ const drawHeader = (screen, info) => {
   let headerText;
   let headerTextNoTags;
 
-  headerText = ` {bold}Polkadot Block Monitor{/bold}{white-fg} on ${info.chain}`;
+  headerText = `{bold}Polkadot Block Monitor{/bold}{white-fg} on ${info.chain}`;
   headerTextNoTags = `Polkadot Block Monitor on ${info.chain} `;
 
   const header = blessed.text({
@@ -265,7 +265,7 @@ try {
 
 }
 
-const getProvider = (url = 'wss://kusama-rpc.polkadot.io/') =>  new WsProvider(url); 
+const getProvider = (endpoint = program.endpoint || 'wss://kusama-rpc.polkadot.io/') =>  new WsProvider(endpoint); 
 
 const getApi = async (provider) => {
   
@@ -287,10 +287,11 @@ async function main() {
 
   // Set up the commander instance and add the required options
   cli
-    .option('--no-mouse', 'Disables mouse interactivity')
+    .option('-e, --endpoint <endpoint>', 'Uses the endpoint specified. Defaults to wss://kusama-rpc.polkadot.io/')
     .version(VERSION)
     .parse(process.argv);
-
+    
+    
   // Create a screen object.
   screen = blessed.screen({
     smartCSR: true,
