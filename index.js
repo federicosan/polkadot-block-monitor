@@ -9,7 +9,6 @@ const glob = require('glob');
 const path = require('path');
 const cli = require('commander');
 const VERSION = require('./package.json').version;
-let themes = '';
 const  DOT_DECIMAL_PLACES = 1000000000000;
 const { ApiPromise, WsProvider} = require('@polkadot/api');
 const web3Provider = 'wss://cc3-5.kusama.network/';
@@ -240,29 +239,34 @@ let hashes = blessed.box({
 const chainInfo = async (api) => {
 
 try {
-    //get api consts  
-    const theconsts = api.consts;
     
-    // Retrieve the chain & node information information via rpc calls
-      const [chain, nodeName, nodeVersion] = await Promise.all([
-        api.rpc.system.chain(),
-        api.rpc.system.name(),
-        api.rpc.system.version()
-      ]);
+    if(api){
+      //get api consts  
+      const theconsts = api.consts;
+      
+      // Retrieve the chain & node information information via rpc calls
+        const [chain, nodeName, nodeVersion] = await Promise.all([
+          api.rpc.system.chain(),
+          api.rpc.system.name(),
+          api.rpc.system.version()
+        ]);
 
-    const existentialDesposit = theconsts.balances.existentialDeposit.toNumber() / DOT_DECIMAL_PLACES;
-  
-    return {
-      chain,
-      nodeName,
-      nodeVersion,
-      existentialDesposit
-    };
-
+      const existentialDesposit = theconsts.balances.existentialDeposit.toNumber() / DOT_DECIMAL_PLACES;
+    
+      return {
+        chain,
+        nodeName,
+        nodeVersion,
+        existentialDesposit
+      };
+      } else{
+        console.error('no api');
+        //reconnect();
+      }
     } catch(e) {
       console.log('Some error with rpc system', e);
     }
-
+   
 }
 
 const getProvider = (endpoint = program.endpoint || 'wss://kusama-rpc.polkadot.io/') =>  new WsProvider(endpoint); 
@@ -314,29 +318,33 @@ async function main() {
   // Subscribe to the new headers on-chain. The callback is fired when new headers
   // are found, the call itself returns a promise with a subscription that can be
   // used to unsubscribe from the newHead subscription
-  let blockHash = {};
-  let signedBlock = {};
-  let newBlock = 0;
+  let blockHash = null;
+  let signedBlock = null;
+  let newBlock = '';
   let newBlockHash = '';
   let newBlockParentHash = '';
   let author = '';
-  let leaderboardhash = {};
+  let leaderboardhash = null;
+
+
+  
 
   const unsubscribe = await api.derive.chain.subscribeNewHeads(async (header) => {
     try {
         newBlock = `${header.number}`;
         blockHash = await api.rpc.chain.getBlockHash(header.number);
         newBlockHash = `${blockHash}`;
-        widgets.blocks.insertTop(newBlock);
-        widgets.hashes.insertTop(newBlockHash);
         author = `${header.author}`;
         signedBlock = await api.rpc.chain.getBlock(blockHash);
         newBlockParentHash = `${signedBlock.block.header.parentHash}`;
-        widgets.parentHashes.insertTop(newBlockParentHash);
         author = `${header.author}`;
+        
+        widgets.blocks.insertTop(newBlock);
+        widgets.hashes.insertTop(newBlockHash);
+        widgets.parentHashes.insertTop(newBlockParentHash);
         widgets.blockAuthors.insertTop(author);
     } catch(e){
-        console.log(e);
+        console.log('Error when subscribing to new heads on the chain', e);
     }});
 
   // Configure 'q', esc, Ctrl+C for quit
@@ -353,7 +361,8 @@ async function main() {
 
     if ( key.name === 'q' ||  key.name === 'escape' ||
         (key.name === 'c' && key.ctrl === true) ) {
-      
+    
+      unsubscribe();
       return process.exit(0);
     }
 
